@@ -8,7 +8,8 @@ import MainLayout from '@/layouts/MainLayout.vue'
 Reto 3: Calendario de Eventos.
 
 En este ejercicio vamos a lidiar con errores tanto de javascript como de maquetación. Tu papel es
-arreglar estos errores y que la página, que actualmente no renderiza, cargue bien el contenido.
+✔ arreglar estos errores y que la página, que actualmente no renderiza, cargue bien el contenido.
+
 Además, vamos a añadir una funcionalidad al calendario: Queremos ver qué eventos hay cada día.
 Como siempre, el diseño y la creatividad quedan del lado de tu lado, ¡Suerte!
 
@@ -54,14 +55,13 @@ const eventsData = [
   },
 ]
 dayjs.extend(isToday)
-let viewDate = ref(dayjs())
+const viewDate = ref(dayjs())
 
-const daystoPrepend = computed(() => {
+const daysToPrepend = computed(() => {
   const startOfMonth = viewDate.value.startOf('month')
   const startOfFirstWeek = startOfMonth.startOf('week')
   const daysToFirstDay = startOfMonth.diff(startOfFirstWeek, 'day')
-
-  return Array.from(new Array(daysToFirstDay).keys())
+  return new Array(daysToFirstDay).fill(undefined).map((_, index) => startOfFirstWeek.add(index, 'day'))
 })
 
 const days = computed(() => {
@@ -78,12 +78,15 @@ const days = computed(() => {
   return ranges
 })
 
-const shiftMonth = function (amount) {
+const shiftMonth = (amount) => {
   viewDate.value = viewDate.value.add(amount, 'month')
 }
-const reset = function () {
+const reset = () => {
   viewDate.value = dayjs()
 }
+const currentSelectedFormattedDate = computed(() => {
+  return viewDate.value.format('MMMM YYYY')
+})
 
 const weekDays = [
   'Sunday',
@@ -103,7 +106,7 @@ const weekDays = [
         <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('-1')">
           Previous
         </button>
-        <span class="text-3xl">{{ dayjs().format('MMMM YYYY') }}</span>
+        <span class="text-3xl">{{ currentSelectedFormattedDate }}</span>
         <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('1')">
           Next
         </button>
@@ -112,16 +115,22 @@ const weekDays = [
         Today
       </button>
     </div>
-    <div class="grid grid-col-7 gap-1">
-      <div v-for="weekDay in weekDays" class="text-center">
+
+    <div class="pt-3 grid grid-cols-7">
+      <div v-for="weekDay in weekDays" class="bg-primary text-white border border-slate-200 flex flex-col text-center">
         <div>{{ weekDay }}</div>
       </div>
     </div>
+
     <div class="grid grid-cols-7">
-      <div v-for="prepend in daystoPrepend" />
+      <div v-for="prepend in daysToPrepend" class="border border-slate-200 flex flex-col h-32">
+        <div class="text-center text-gray-400">
+          <span>{{ prepend.format('D') }}</span>
+        </div>
+      </div>
       <div v-for="day in days" class="border border-slate-200 flex flex-col h-32">
-        <div :class="[day.isToday() ? 'bg-red-300' : '']" class="text-center">
-          <div>{{ day.format('D') }}</div>
+        <div :class="[day.isToday() ? 'bg-secondary' : '']" class="text-center">
+          <span>{{ day.format('D') }}</span>
         </div>
       </div>
     </div>
