@@ -12,8 +12,6 @@ En este ejercicio vamos a lidiar con errores tanto de javascript como de maqueta
 
 Además, vamos a añadir una funcionalidad al calendario: Queremos ver qué eventos hay cada día.
 Como siempre, el diseño y la creatividad quedan del lado de tu lado, ¡Suerte!
-
-Siéntete libre de modificar tanto código como sea necesario, recuerda que el código proporcionado es sólo un ejemplo.
 */
 
 const eventsData = [
@@ -67,13 +65,13 @@ const daysToPrepend = computed(() => {
 const days = computed(() => {
   const ranges = []
   const startOfRange = viewDate.value.startOf('month').add(-1, 'day')
-  const endOfRange = dayjs().endOf('month').add(-1, 'day')
+  const endOfRange = viewDate.value.endOf('month').add(-1, 'day')
 
   let currentDate = startOfRange
 
   while (currentDate.isBefore(endOfRange) || currentDate.isSame(endOfRange)) {
     currentDate = currentDate.add(1, 'day')
-    ranges.push(currentDate)
+    ranges.push(currentDate.add(1, 'day'))
   }
   return ranges
 })
