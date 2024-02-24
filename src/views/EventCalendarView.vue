@@ -56,7 +56,7 @@ const eventsData = [
 
 dayjs.extend(isToday)
 
-const viewDate = ref(dayjs())
+let viewDate = ref(dayjs())
 
 const daystoPrepend = computed(() => {
   const startOfMonth = viewDate.startOf('month')
