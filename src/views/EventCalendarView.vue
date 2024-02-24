@@ -1,6 +1,6 @@
 <script setup>
-import { dayjs } from 'dayjs'
-import { isToday } from 'dayjs/plugin/isToday'
+import dayjs from 'dayjs'
+import isToday from 'dayjs/plugin/isToday'
 import { computed, ref } from 'vue'
 
 import MainLayout from '@/layouts/MainLayout.vue'
@@ -53,13 +53,11 @@ const eventsData = [
     type: 'cinema',
   },
 ]
-
 dayjs.extend(isToday)
-
 let viewDate = ref(dayjs())
 
 const daystoPrepend = computed(() => {
-  const startOfMonth = viewDate.startOf('month')
+  const startOfMonth = viewDate.value.startOf('month')
   const startOfFirstWeek = startOfMonth.startOf('week')
   const daysToFirstDay = startOfMonth.diff(startOfFirstWeek, 'day')
 
@@ -68,8 +66,8 @@ const daystoPrepend = computed(() => {
 
 const days = computed(() => {
   const ranges = []
-  const startOfRange = viewDate.startOf('month').add(-1, 'day')
-  const endOfRange = viewDate.endOf('month').add(-1, 'day')
+  const startOfRange = viewDate.value.startOf('month').add(-1, 'day')
+  const endOfRange = dayjs().endOf('month').add(-1, 'day')
 
   let currentDate = startOfRange
 
@@ -81,10 +79,10 @@ const days = computed(() => {
 })
 
 const shiftMonth = function (amount) {
-  viewDate = viewDate.add(amount, 'month')
+  viewDate.value = viewDate.value.add(amount, 'month')
 }
 const reset = function () {
-  viewDate = dayjs()
+  viewDate.value = dayjs()
 }
 
 const weekDays = [
@@ -102,46 +100,28 @@ const weekDays = [
   <MainLayout>
     <div class="flex flex-col items-center">
       <div class="w-full flex space-x-2 items-center justify-center">
-        <button
-          class="bg-primary text-white rounded-xl px-4 py-2"
-          @click="shiftMonth('-1')"
-        >
+        <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('-1')">
           Previous
         </button>
-        <span class="text-3xl">{{ viewDate.format('MMMM YYYY') }}</span>
-        <button
-          class="bg-primary text-white rounded-xl px-4 py-2"
-          @click="shiftMonth('1')"
-        >
+        <span class="text-3xl">{{ dayjs().format('MMMM YYYY') }}</span>
+        <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('1')">
           Next
         </button>
       </div>
-      <button
-        class="w-fit text-primary border-b rounded-xl px-4 py-2"
-        @click="reset()"
-      >
+      <button class="w-fit text-primary border-b rounded-xl px-4 py-2" @click="reset()">
         Today
       </button>
     </div>
     <div class="grid grid-col-7 gap-1">
-      <div
-        v-for="weekDay in weekDays"
-        class="text-center"
-      >
+      <div v-for="weekDay in weekDays" class="text-center">
         <div>{{ weekDay }}</div>
       </div>
     </div>
     <div class="grid grid-cols-7">
       <div v-for="prepend in daystoPrepend" />
-      <div
-        v-for="day in days"
-        class="border border-slate-200 flex flex-col h-32"
-      >
-        <div
-          :class="[day.isToday() ? 'bg-red-300' : '']"
-          class="text-center"
-        >
-          <div>{{ day.formatTo('D') }}</div>
+      <div v-for="day in days" class="border border-slate-200 flex flex-col h-32">
+        <div :class="[day.isToday() ? 'bg-red-300' : '']" class="text-center">
+          <div>{{ day.format('D') }}</div>
         </div>
       </div>
     </div>
