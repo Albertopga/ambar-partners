@@ -4,16 +4,16 @@ import isToday from 'dayjs/plugin/isToday'
 import { computed, ref } from 'vue'
 
 import MainLayout from '@/layouts/MainLayout.vue'
-/*
-Reto 3: Calendario de Eventos.
 
-En este ejercicio vamos a lidiar con errores tanto de javascript como de maquetación. Tu papel es
-✔ arreglar estos errores y que la página, que actualmente no renderiza, cargue bien el contenido.
-
-Además, vamos a añadir una funcionalidad al calendario: Queremos ver qué eventos hay cada día.
-Como siempre, el diseño y la creatividad quedan del lado de tu lado, ¡Suerte!
-*/
-
+const weekDays = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+]
 const eventsData = [
   {
     eventTime: '2023-11-09T00:00:00',
@@ -51,8 +51,18 @@ const eventsData = [
     eventTime: '2023-11-29T00:00:00',
     type: 'cinema',
   },
+  {
+    eventTime: '2024-01-31T00:00:00',
+    type: 'holydays',
+  },
+  {
+    eventTime: '2024-02-24T00:00:00',
+    type: 'technical test',
+  }
 ]
+
 dayjs.extend(isToday)
+
 const viewDate = ref(dayjs())
 
 const daysToPrepend = computed(() => {
@@ -86,15 +96,10 @@ const currentSelectedFormattedDate = computed(() => {
   return viewDate.value.format('MMMM YYYY')
 })
 
-const weekDays = [
-  'Sunday',
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-]
+const displayEvent = (day) => {
+  const eventInThDay = eventsData.find(event => event.eventTime === day.format('YYYY-MM-DDTHH:mm:ss'))
+  return eventInThDay ? eventInThDay.type : ''
+}
 </script>
 
 <template>
@@ -123,12 +128,14 @@ const weekDays = [
     <div class="grid grid-cols-7">
       <div v-for="prepend in daysToPrepend" class="border border-slate-200 flex flex-col h-32">
         <div class="text-center text-gray-400">
-          <span>{{ prepend.format('D') }}</span>
+          <div>{{ prepend.format('D') }}</div>
+          <div>{{ displayEvent(prepend) }}</div>
         </div>
       </div>
       <div v-for="day in days" class="border border-slate-200 flex flex-col h-32">
-        <div :class="[day.isToday() ? 'bg-secondary' : '']" class="text-center">
-          <span>{{ day.format('D') }}</span>
+        <div :class="[day.isToday() ? 'bg-secondary font-semibold' : '']" class="text-center">
+          <div>{{ day.format('D') }}</div>
+          <div>{{ displayEvent(day) }}</div>
         </div>
       </div>
     </div>
