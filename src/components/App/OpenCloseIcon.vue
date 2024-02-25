@@ -6,7 +6,7 @@ defineProps({
     isOpen: Boolean,
     require: true
 })
-//TODO parametrize side color
+//TODO parametrize side, color...
 </script>
 <template>
     <svg :class="{ 'transform rotate-180': isOpen }" class="h-8 w-8  text-secondary" fill="none" viewBox="0 0 24 24"

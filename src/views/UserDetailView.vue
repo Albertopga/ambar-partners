@@ -1,8 +1,9 @@
 <script setup>
 import MainLayout from '@/layouts/MainLayout.vue'
-import AppAccordion from '@/components/App/Accordion.vue'
-import AppEditIcon from '@/components/App/EditIcon.vue'
-import { reactive, ref } from 'vue'
+import AppCardSection from '@/components/App/CardSecction.vue'
+// import AppEditIcon from '@/components/App/EditIcon.vue'
+// import AppList from '@/components/App/List.vue'
+import { reactive } from 'vue'
 
 /*
 Reto 2: Vista de Datos del Usuario.
@@ -94,7 +95,7 @@ const personalDataFields = [
   "weight"
 ]
 
-const contactDataFields = ["email", "phone", "address"]
+const contactDataFields = ["email", "phone"]
 const employmentDataFields = ["ein", "ssn", "company", "university"]
 const credentialsDataFields = ["id", "username", "password", "domain", "ip", "macAddress"]
 
@@ -103,47 +104,26 @@ const prepareObject = (fields) => {
   fields.forEach(key => res[key] = userData[key]);
   return res
 }
-const isOpen = ref(false)
-
-const personalData = reactive(prepareObject(personalDataFields))
-const contactData = reactive(prepareObject(contactDataFields))
-const employmentData = reactive(prepareObject(employmentDataFields))
-const credentialsData = reactive(prepareObject(credentialsDataFields))
-const bankData = reactive(userData.bank)
-
-const toggleAccordion = () => {
-  isOpen.value = !isOpen.value;
-}
-const edit = () => {
-  console.log('edito')
-}
-
-console.log(personalData)
+const state = reactive({
+  personalData: reactive(prepareObject(personalDataFields)),
+  contactData: reactive(prepareObject(contactDataFields)),
+  employmentData: reactive(prepareObject(employmentDataFields)),
+  credentialsData: reactive(prepareObject(credentialsDataFields)),
+  bankData: reactive(userData.bank),
+  addressData: reactive(userData.address)
+})
 </script>
 
 <template>
   <MainLayout>
     <header class="flex flex-row items-center bg-gray-800 py-4 text-center text-secondary">
-      <h1 class="flex-grow text-2xl font-semibold">{{ `${personalData.firstName} ${personalData.lastName}` }}</h1>
-      <img class="bg-white rounded-full mr-4" :src="personalData.image" alt="Profile section">
+      <h1 class="flex-grow text-2xl font-semibold ml-5">{{ `${state.personalData.firstName}
+              ${state.personalData.lastName}` }}
+      </h1>
+      <img class="bg-white rounded-full mr-4" :src="state.personalData.image" alt="Profile section">
     </header>
     <main class="min-h-full bg-gray-300 p-4">
-      <AppAccordion title="Personal Data">
-        <template v-slot:icon>
-          <div @click="edit">
-            <AppEditIcon />
-          </div>
-        </template>
-        <template v-slot:content>
-          <ul>
-            <li v-for="(value, key, index) in personalData" :key="index"
-              class="grid grid-cols-3 w-full border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
-              <p class="font-semibold">{{ key }}</p>
-              <p class="col-span-2">{{ value }}</p>
-            </li>
-          </ul>
-        </template>
-      </AppAccordion>
+      <AppCardSection v-for="(stateData, key, index) in state" :title="key" :data="stateData" :key="index" />
     </main>
   </MainLayout>
 </template>

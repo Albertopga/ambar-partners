@@ -29,6 +29,7 @@ const containerClasses = {
     'bg-white': true,
     'shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]': true,
     'dark:bg-neutral-700': true,
+    'my-4': true
 }
 
 </script>
@@ -48,12 +49,12 @@ const containerClasses = {
   
 <template>
     <section :class="containerClasses">
-        <section class="flex items-center p-4 cursor-pointer" @click="toggleAccordion">
+        <section :class="{ 'border-b-4': isOpen }" class="flex items-center p-4 cursor-pointer" @click="toggleAccordion">
             <h2 class="flex-grow text-2xl font-semibold text-center">{{ title }}</h2>
             <AppOpenCloseIcon :isOpen="isOpen" />
         </section>
         <transition name="accordion">
-            <section v-if="isOpen" class="w-full flex flex-col items-center">
+            <section v-if="isOpen" class="pt-2 w-full flex flex-col items-center">
                 <slot name="icon"></slot>
                 <slot name="content"></slot>
             </section>
