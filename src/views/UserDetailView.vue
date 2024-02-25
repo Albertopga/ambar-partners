@@ -1,6 +1,9 @@
 <script setup>
 import MainLayout from '@/layouts/MainLayout.vue'
-import { reactive } from 'vue'
+import AppAccordion from '@/components/App/Accordion.vue'
+import AppEditIcon from '@/components/App/EditIcon.vue'
+import { reactive, ref } from 'vue'
+
 /*
 Reto 2: Vista de Datos del Usuario.
 
@@ -100,6 +103,7 @@ const prepareObject = (fields) => {
   fields.forEach(key => res[key] = userData[key]);
   return res
 }
+const isOpen = ref(false)
 
 const personalData = reactive(prepareObject(personalDataFields))
 const contactData = reactive(prepareObject(contactDataFields))
@@ -107,45 +111,39 @@ const employmentData = reactive(prepareObject(employmentDataFields))
 const credentialsData = reactive(prepareObject(credentialsDataFields))
 const bankData = reactive(userData.bank)
 
+const toggleAccordion = () => {
+  isOpen.value = !isOpen.value;
+}
+const edit = () => {
+  console.log('edito')
+}
+
 console.log(personalData)
 </script>
 
 <template>
   <MainLayout>
-    <header class="bg-gray-800 py-4 text-center text-secondary">
-      <h1 class="text-2xl font-semibold">Datos del usuario</h1>
+    <header class="flex flex-row items-center bg-gray-800 py-4 text-center text-secondary">
+      <h1 class="flex-grow text-2xl font-semibold">{{ `${personalData.firstName} ${personalData.lastName}` }}</h1>
+      <img class="bg-white rounded-full mr-4" :src="personalData.image" alt="Profile section">
     </header>
-    <main class="container mx-auto py-8">
-      <section class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold mb-4">Datos personales</h2>
-        <ul>
-          <li v-for="value, key, a in personalData"><strong>{{ key }}:</strong> {{ value }}</li>
-        </ul>
-      </section>
-      <section class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold mb-4">Datos bancarios</h2>
-        <ul>
-          <li><strong>Banco:</strong> {{ 'hola' }}</li>
-          <li><strong>Número de cuenta:</strong> {{ 'hola' }}</li>
-          <!-- Agrega más detalles según los datos bancarios recogidos -->
-        </ul>
-      </section>
-      <section class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold mb-4">Credenciales</h2>
-        <ul>
-          <li><strong>Nombre de usuario:</strong> {{ 'hola' }}</li>
-          <li><strong>Contraseña:</strong> {{ 'hola' }}</li>
-          <!-- Agrega más detalles según las credenciales recogidas -->
-        </ul>
-      </section>
-      <section class="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold mb-4">Datos de contacto</h2>
-        <ul>
-          <li><strong>Email:</strong> {{ 'hola' }}</li>
-          <li><strong>Teléfono:</strong> {{ 'hola' }}</li>
-          <!-- Agrega más detalles según los datos de contacto recogidos -->
-        </ul>
-      </section>
+    <main class="min-h-full bg-gray-300 p-4">
+      <AppAccordion title="Personal Data">
+        <template v-slot:icon>
+          <div @click="edit">
+            <AppEditIcon />
+          </div>
+        </template>
+        <template v-slot:content>
+          <ul>
+            <li v-for="(value, key, index) in personalData" :key="index"
+              class="grid grid-cols-3 w-full border-b-2 border-neutral-100 border-opacity-100 p-4 dark:border-opacity-50">
+              <p class="font-semibold">{{ key }}</p>
+              <p class="col-span-2">{{ value }}</p>
+            </li>
+          </ul>
+        </template>
+      </AppAccordion>
     </main>
   </MainLayout>
 </template>
