@@ -13,7 +13,8 @@ const state = reactive({
   name: { value: '', touched: false },
   email: { value: '', touched: false },
   password: { value: '', touched: false },
-  confirmPassword: { value: '', touched: false }
+  confirmPassword: { value: '', touched: false },
+  submitted: false
 })
 
 const minLength = 2
@@ -37,6 +38,7 @@ const isValidForm = computed(() => {
 })
 
 const submit = () => {
+  state.submitted = true
   console.log("Los datos almacenados son")
   console.table({ ...state })
 }
@@ -57,6 +59,7 @@ const inputClasses = {
   'rounded-lg': true,
   'focus:outline-secondary': true,
 }
+
 </script>
 
 <template>
@@ -104,7 +107,7 @@ const inputClasses = {
         <input id="confirm" :class="inputClasses" type="text" name="confirm" placeholder="confirm password"
           v-model="state.confirmPassword.value" @input="state.confirmPassword.touched = true">
         <div :class="errorContainerClasses" v-if="!isValidConfirmPassword">
-          <p class="font-semibold text-xs">The value entered does not match the passwor: </p>
+          <p class="font-semibold text-xs">The value entered does not match the passwor:</p>
         </div>
       </fieldset>
       <button type="submit" :disabled="!isValidForm" :class="[
@@ -121,6 +124,7 @@ const inputClasses = {
       ]">
         Register
       </button>
+      <span class="text-green-500" v-if="state.submitted">Send success</span>
     </form>
   </MainLayout>
 </template>
