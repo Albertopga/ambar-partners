@@ -109,23 +109,25 @@ const displayEvent = (day) => {
   const eventInThDay = eventsData.find(event => event.eventTime === day.format('YYYY-MM-DDTHH:mm:ss'))
   return eventInThDay ? eventInThDay.type : ''
 }
+
+
 </script>
 
 <template>
   <MainLayout>
-    <div class="bg-gray-100 border w-10/123 min-w-[500px] mx-auto p-4 rounded">
+    <div class="bg-gray-100 border w-10/123 min-w-[500px] max-w-[1000px] mx-auto p-4 rounded-md">
       <div class="w-50 flex flex-col items-center">
         <div class="flex flex-row justify-items-center">
-          <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('-1')">
+          <button class="bg-secondary text-white rounded-xl px-4 py-2" @click="shiftMonth('-1')">
             Previous
           </button>
           <span class="col-span-full md:col-span-1 text-3xl min-w-60 text-center">{{ currentSelectedFormattedDate
           }}</span>
-          <button class="bg-primary text-white rounded-xl px-4 py-2" @click="shiftMonth('1')">
+          <button class="bg-secondary text-white rounded-xl px-4 py-2" @click="shiftMonth('1')">
             Next
           </button>
         </div>
-        <button class="w-fit text-primary border-b rounded-xl px-4 py-2" @click="reset()">
+        <button class=" bg-white w-fit text-primary font-semibold border-b rounded-xl px-4 py-2" @click="reset()">
           Today
         </button>
       </div>
@@ -143,7 +145,7 @@ const displayEvent = (day) => {
             <div>{{ displayEvent(prepend) }}</div>
           </div>
         </div>
-        <div v-for="day in days" :class="[day.isToday() ? 'ring ring-inset ring-orange-300 font-semibold' : '']"
+        <div v-for="day in days" :class="{ 'ring ring-inset ring-orange-300 font-semibold': day.isToday() }"
           class="border border-slate-200 flex flex-col h-20">
           <div class="text-center">
             <div>{{ day.format('D') }}</div>
