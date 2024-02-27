@@ -147,8 +147,10 @@ const inputClasses = {
 <template>
   <MainLayout>
     <header class="flex flex-row items-center bg-gray-800 py-4 text-center text-secondary">
-      <h1 class="flex-grow text-2xl font-semibold ml-5">{{ `${state.personalData.value.firstName}
+      <h1 v-if="!login" class="flex-grow text-2xl font-semibold ml-5">{{ `${state.personalData.value.firstName}
               ${state.personalData.value.lastName}` }}
+      </h1>
+      <h1 v-else class="flex-grow text-2xl font-semibold ml-5">LOGIN
       </h1>
       <img class="bg-white rounded-full mr-4" :src="state.personalData.value.image" alt="Profile section">
     </header>
