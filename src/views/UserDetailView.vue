@@ -3,7 +3,7 @@ import MainLayout from '@/layouts/MainLayout.vue'
 import AppCardSection from '@/components/App/CardSecction.vue'
 // import AppEditIcon from '@/components/App/EditIcon.vue'
 // import AppList from '@/components/App/List.vue'
-import { reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 /*
 Reto 2: Vista de Datos del Usuario.
@@ -104,26 +104,89 @@ const prepareObject = (fields) => {
   fields.forEach(key => res[key] = userData[key]);
   return res
 }
+const userName = ref('')
+const userPassword = ref('')
+const login = ref(true)
+const credentialsData = reactive({ value: reactive(prepareObject(credentialsDataFields)), sectionHead: "Credenciales" })
 const state = reactive({
-  personalData: reactive(prepareObject(personalDataFields)),
-  contactData: reactive(prepareObject(contactDataFields)),
-  employmentData: reactive(prepareObject(employmentDataFields)),
-  credentialsData: reactive(prepareObject(credentialsDataFields)),
-  bankData: reactive(userData.bank),
-  addressData: reactive(userData.address)
+  personalData: { value: reactive(prepareObject(personalDataFields)), sectionHead: "Datos personales" },
+  contactData: { value: reactive(prepareObject(contactDataFields)), sectionHead: "Datos de contacto" },
+  employmentData: { value: reactive(prepareObject(employmentDataFields)), sectionHead: "Datos laborales" },
+  bankData: { value: reactive(userData.bank), sectionHead: "Datos bancarios" },
+  addressData: { value: reactive(userData.address), sectionHead: "Dirección" }
 })
+const isValidForm = computed(() => {
+  // username: 'atuny0',
+  // password: '9uQFF1Lh',
+  return (userName.value == credentialsData.value.username) && (userPassword.value == credentialsData.value.password)
+})
+const hideLogin = () => {
+  login.value = false
+}
+const containerClasses = {
+  'mx-auto': true,
+  'block': true,
+  'w-full': true,
+  'max-w-screen-sm': true,
+  'rounded-lg': true,
+  'bg-white': true,
+  'shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]': true,
+  'dark:bg-neutral-700': true,
+  'my-4': true
+}
+const inputClasses = {
+  'bg-gray-100': true,
+  'px-4': true,
+  'py-2': true,
+  'rounded-lg': true,
+  'focus:outline-secondary': true,
+}
+
 </script>
 
 <template>
   <MainLayout>
     <header class="flex flex-row items-center bg-gray-800 py-4 text-center text-secondary">
-      <h1 class="flex-grow text-2xl font-semibold ml-5">{{ `${state.personalData.firstName}
-              ${state.personalData.lastName}` }}
+      <h1 class="flex-grow text-2xl font-semibold ml-5">{{ `${state.personalData.value.firstName}
+              ${state.personalData.value.lastName}` }}
       </h1>
-      <img class="bg-white rounded-full mr-4" :src="state.personalData.image" alt="Profile section">
+      <img class="bg-white rounded-full mr-4" :src="state.personalData.value.image" alt="Profile section">
     </header>
     <main class="min-h-full bg-gray-300 p-4">
-      <AppCardSection v-for="(stateData, key, index) in state" :title="key" :data="stateData" :key="index" />
+      <section v-if="login" :class="containerClasses">
+        <form class="w-2/4 mx-auto" action="login">
+          <fieldset>
+            <label class="font-semibold block my-3 text-md" for="username">
+              Username
+            </label>
+            <input id="username" :class="inputClasses" type="text" name="username" placeholder="username"
+              v-model="userName">
+          </fieldset>
+          <fieldset>
+            <label class="font-semibold block my-3 text-md" for="password">
+              Password
+            </label>
+            <input id="password" :class="inputClasses" type="text" name="password" placeholder="password"
+              v-model="userPassword">
+          </fieldset>
+        </form>
+        <button type="hideLogin" :disabled="!isValidForm" @click="hideLogin" :class="[
+          isValidForm ? 'bg-primary hover:bg-secondary' : 'bg-gray-400 cursor-not-allowed',
+          'w-full',
+          'mt-6',
+          'rounded-lg',
+          'px-4',
+          'py-2',
+          'text-lg',
+          'text-white',
+          'font-semibold',
+          'font-sans'
+        ]">
+          Login
+        </button>
+      </section>
+      <AppCardSection v-else v-for="(stateData, index) in state" :title="stateData.sectionHead" :data="stateData.value"
+        :key="index" />
     </main>
   </MainLayout>
 </template>
